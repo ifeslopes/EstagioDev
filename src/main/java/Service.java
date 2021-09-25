@@ -1,7 +1,4 @@
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-
-/*import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
@@ -22,9 +19,7 @@ import java.io.*;
 
 import java.security.GeneralSecurityException;
 import java.util.*;
-*/
-public class SheetAndJava {
-    /*
+public class Service {
     private static final String APPLICATION_NAME = "Engenharia de Software - Desafio Leonardo Lopes";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
@@ -53,20 +48,21 @@ public class SheetAndJava {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
-
-
-
-*/
-    public static void main(String... args) throws GeneralSecurityException, IOException {
-        /*
-        // Build a new authorized API client service.
+    private  static Sheets GetInformation() throws GeneralSecurityException, IOException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-
-        Myfunction myfunction =new Myfunction();
 
         Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
+        return service;
+    }
+
+    public static void UpdateInformation() throws GeneralSecurityException, IOException {
+
+
+        Myfunction myfunction =new Myfunction();
+
+        Sheets service = GetInformation();
 
         final String spreadsheetId = "1uff5wJRRA0UtEf_GmBc78ohl9Nc90cfHecbufAdynIs";
         final String range = "engenharia_de_software!B4:F27";
@@ -89,54 +85,65 @@ public class SheetAndJava {
 
         for(List row : values) {
 
-            System.out.print("Nome: "+row.get(0)+" = Faltas: "+row.get(1)+" media: ");
+
             double media =myfunction.MediaConverter(""+row.get(2),""+row.get(3), ""+row.get(4));
 
             if ((media < 5)) {
-                System.out.print("Nome: "+row.get(0)+" = Faltas: "+row.get(1)+" media: ");
-                System.out.println(media);
+
                 myfunction.InsertSpreadsheet(spreadsheetId, service, "Reprovado por nota", "G" +num);
                 myfunction.InsertSpreadsheet(spreadsheetId, service, "0", "H" +num);
             }
             else if (media<7){
-                System.out.print("Nome: "+row.get(0)+" = Faltas: "+row.get(1)+" media: ");
-                System.out.println(media);
-                System.out.println("nota para aprovação !!!!! "+myfunction.PointsForPassing(media));
+
 
                 myfunction.InsertSpreadsheet(spreadsheetId, service, "Exame Final", "G" +num);
                 myfunction.InsertSpreadsheet(spreadsheetId, service, ""+myfunction.PointsForPassing(media), "H" +num);
 
             }
             else {
-                System.out.print("Nome: "+row.get(0)+" = Faltas: "+row.get(1)+" media: ");
-                System.out.println(media);
+
                 myfunction.InsertSpreadsheet(spreadsheetId, service, "Aprovado", "G" +num);
                 myfunction.InsertSpreadsheet(spreadsheetId, service, "0", "H" +num);
 
             }
 
             if(classLogTotal * 0.25 < Integer.parseInt(""+row.get(1))){
-                System.out.print("Nome: "+row.get(0)+" = Faltas: "+row.get(1)+" media: ");
-                System.out.println("Reprovado por falta quantidade de faltas= "+row.get(1));
-                System.out.println(classLogTotal * 0.25 );
+
                 myfunction.InsertSpreadsheet(spreadsheetId, service, "Reprovado por Falta", "G" +num);
 
 
-                }
+            }
             num++;
-
-            //System.out.println(media);
 
 
         }
+    }
 
-         */
-        Service service =new Service();
-        //service.UpdateInformation();
-        service.ShowInformartion();
+    public static  void  ShowInformartion() throws GeneralSecurityException, IOException {
+        Sheets service = GetInformation();
+
+        final String spreadsheetId = "1uff5wJRRA0UtEf_GmBc78ohl9Nc90cfHecbufAdynIs";
+        final String range = "engenharia_de_software!A3:H27";
+        ValueRange result = service.spreadsheets().values().get(spreadsheetId, range).execute();
+
+        List<List<Object>> values = result.getValues();
+        System.out.println("-----------------------------------------------------------------------------");
+        System.out.printf("%5s %7s %10s %5s %5s %5s %12s %30s \n", values.get(0).get(0), values.get(0).get(1),values.get(0).get(2),
+                values.get(0).get(3),values.get(0).get(4),values.get(0).get(5), values.get(0).get(6), values.get(0).get(7));
+        System.out.println();
+        System.out.println("-----------------------------------------------------------------------------");
+
+        for(List row : values) {
+
+            System.out.printf(row.get(0).equals("Matricula")?"":
+                    "%5s %12s %5s %5s %5s %5s %20s %10s \n",
+                    row.get(0), row.get(1),row.get(2),row.get(3),row.get(4), row.get(5), row.get(6),row.get(7));
 
 
+        }
+        System.out.println("-----------------------------------------------------------------------------");
 
 
     }
+
 }
