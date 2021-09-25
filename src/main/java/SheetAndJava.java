@@ -64,7 +64,7 @@ public class SheetAndJava {
                 .build();
 
         final String spreadsheetId = "1uff5wJRRA0UtEf_GmBc78ohl9Nc90cfHecbufAdynIs";
-        final String range = "engenharia_de_software!B4:F24";
+        final String range = "engenharia_de_software!B4:F27";
 
         int num=4;
         Integer classLogTotal=0;
@@ -97,18 +97,25 @@ public class SheetAndJava {
                 System.out.print("Nome: "+row.get(0)+" = Faltas: "+row.get(1)+" media: ");
                 System.out.println(media);
                 System.out.println("nota para aprovação !!!!! "+myfunction.PointsForPassing(media));
-                //InsertSpreadsheet(spreadsheetId, service, "Exame Final", "" + row.get(5));
+
+                myfunction.InsertSpreadsheet(spreadsheetId, service, "Exame Final", "G" +num);
+                myfunction.InsertSpreadsheet(spreadsheetId, service, ""+myfunction.PointsForPassing(media), "H" +num);
+
             }
             else {
                 System.out.print("Nome: "+row.get(0)+" = Faltas: "+row.get(1)+" media: ");
                 System.out.println(media);
-               // InsertSpreadsheet(spreadsheetId, service, "Aprovado", "" + row.get(5));
+                myfunction.InsertSpreadsheet(spreadsheetId, service, "Aprovado", "G" +num);
+                myfunction.InsertSpreadsheet(spreadsheetId, service, "0", "H" +num);
+
             }
 
             if(classLogTotal * 0.25 < Integer.parseInt(""+row.get(1))){
                 System.out.print("Nome: "+row.get(0)+" = Faltas: "+row.get(1)+" media: ");
                 System.out.println("Reprovado por falta quantidade de faltas= "+row.get(1));
                 System.out.println(classLogTotal * 0.25 );
+                myfunction.InsertSpreadsheet(spreadsheetId, service, "Reprovado por Falta", "G" +num);
+
 
                 }
             num++;
