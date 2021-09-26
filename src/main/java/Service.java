@@ -57,7 +57,20 @@ public class Service {
         return service;
     }
 
-    public static void UpdateInformation() throws GeneralSecurityException, IOException {
+    static String progressBar(int progressBarSize, long currentPosition, long startPositoin, long finishPosition) {
+        String bar = "";
+        int nPositions = progressBarSize;
+        char pb = '░';
+        char stat = '█';
+        for (int p = 0; p < nPositions; p++) {
+            bar += pb;
+        }
+        int ststus = (int) (100 * (currentPosition - startPositoin) / (finishPosition - startPositoin));
+        int move = (nPositions * ststus) / 100;
+        return "[" + bar.substring(0, move).replace(pb, stat) + ststus + "%" + bar.substring(move, bar.length()) + "]";
+    }
+
+    public static void UpdateInformation() throws GeneralSecurityException, IOException, InterruptedException {
 
 
         Myfunction myfunction =new Myfunction();
@@ -68,7 +81,9 @@ public class Service {
         final String range = "engenharia_de_software!B4:F27";
 
         int num=4;
-        Integer classLogTotal=0;
+        int classLogTotal=0;
+        int porcent = 2;
+
 
 
         ValueRange classLog = service.spreadsheets().values().get(spreadsheetId, "engenharia_de_software!A2").execute();
@@ -113,10 +128,18 @@ public class Service {
 
 
             }
+
+            System.out.print("\033\143");
+            System.out.println( progressBar(values.size(),porcent,0,values.size()) );
             num++;
+            porcent++;
 
 
         }
+        System.out.print("\n \n\n Dados Carregados Com Sucesso!\n\n\n");
+        Thread.currentThread().sleep(3000);
+
+
     }
 
     public static  void  ShowInformartion() throws GeneralSecurityException, IOException {
